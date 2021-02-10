@@ -18,5 +18,6 @@ func seedRandom() {
 }
 
 func main() {
-	fmt.Println(split(12, 3))
+	var a, b = 14, 3
+	fmt.Println(split(a, b))
 }
