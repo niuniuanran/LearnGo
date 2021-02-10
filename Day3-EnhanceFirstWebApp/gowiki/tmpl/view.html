@@ -1,5 +1,14 @@
-<h1>{{.Title}}</h1>
-
-<p>[<a href="/edit/{{.Title}}">edit</a>]</p>
-
-<div>{{printf "%s" .Body}}</div>
+<div style="display: flex">
+  <div style="margin-right: 4rem">
+    {{range $page := .Pages}}
+    <div>
+      <a href="/view/{{$page}}"> {{$page}} </a>
+    </div>
+    {{end}}
+  </div>
+  <div>
+    <h1>{{.Page.Title}}</h1>
+    <p>[<a href="/edit/{{.Page.Title}}">edit</a>]</p>
+    <div>{{printf "%s" .Page.Body}}</div>
+  </div>
+</div>

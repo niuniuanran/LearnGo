@@ -18,6 +18,12 @@ type Page struct {
 	Body  []byte // Body field, byte slice, a type expected by the io libraries
 }
 
+// RenderData is used for templates to render the page
+type RenderData struct {
+	Page  *Page
+	Pages []string
+}
+
 func (p *Page) save() error {
 	// p is a pointer to a Page struct, but can access fields of the Page struct
 	filename := "./data/" + p.Title + ".txt"
@@ -69,6 +75,10 @@ func saveHandler(w http.ResponseWriter, r *http.Request, title string) {
 	http.Redirect(w, r, "/view/"+title, http.StatusFound)
 }
 
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/view/FrontPage", http.StatusFound)
+}
+
 func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		title, err := getTitle(w, r)
@@ -79,8 +89,25 @@ func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.Handl
 	}
 }
 
+func listPages() ([]string, error) {
+	files, err := ioutil.ReadDir("./data")
+	var names []string
+	if err != nil {
+		return nil, err
+	}
+
+	for _, file := range files {
+		names = append(names, file.Name())
+	}
+	return names, nil
+}
+
 func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
-	err := templates.ExecuteTemplate(w, tmpl+".html", p)
+	pages, err := listPages()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	err = templates.ExecuteTemplate(w, tmpl+".html", RenderData{Page: p, Pages: pages})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -96,6 +123,7 @@ func getTitle(w http.ResponseWriter, r *http.Request) (string, error) {
 }
 
 func main() {
+	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/view/", makeHandler(viewHandler))
 	http.HandleFunc("/edit/", makeHandler(editHandler))
 	http.HandleFunc("/save/", makeHandler(saveHandler))
