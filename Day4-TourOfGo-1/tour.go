@@ -22,8 +22,16 @@ func typeConvertion() (c complex128) {
 	return
 }
 
+func myFirstLoop() {
+	for sum := 1; sum < 1000; {
+		sum += sum
+		fmt.Println(sum)
+	}
+}
+
 func main() {
 	var a, b = 14, 3
 	fmt.Println(split(a, b))
 	fmt.Println(typeConvertion())
+	myFirstLoop()
 }
