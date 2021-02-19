@@ -9,7 +9,7 @@ import (
 
 func main() {
 	files := os.Args[2:]
-	counts := make(map[string]int)
+	lines := make(map[string]map[string]int)
 	if len(files) < 1 {
 		return
 	}
@@ -19,15 +19,27 @@ func main() {
 			fmt.Fprintf(os.Stderr, "%v\n", err)
 			continue
 		}
-		lines := strings.Split(string(data), "\n")
-		for _, line := range lines {
-			counts[line]++
+		for _, line := range strings.Split(string(data), "\n") {
+			if lines[line] == nil {
+				lines[line] = make(map[string]int)
+			}
+			lines[line][f]++
 		}
 	}
-	for line, count := range counts {
-		if count > 1 {
-			fmt.Printf("%d\t%s\n", count, line)
+	for s, line := range lines {
+		if totalCount(line) > 1 {
+			fmt.Printf("%3d\t%q\n", totalCount(line), s)
+			for fname, n := range line {
+				fmt.Printf("\t%2d\t%s\n", n, fname)
+			}
 		}
 	}
+}
 
+func totalCount(lines map[string]int) int {
+	sum := 0
+	for _, count := range lines {
+		sum += count
+	}
+	return sum
 }
