@@ -1,11 +1,11 @@
-package main
+package json
 
 import (
 	"encoding/json"
 	"log"
 )
 
-type person struct {
+type Person struct {
 	// To make the field "marshallable", the field has to be exported.
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
@@ -18,18 +18,25 @@ func main() {
 			"last_name": "niu"
 		}
 	`
-	var unmarshelled person
-	// If person has no exported fields, there will be a warning here saying
-	// "struct doesn't have any exported fields, nor custom marshaling"
-	// and the unmarshalled object will be empty.
-	err := json.Unmarshal([]byte(myJson), &unmarshelled)
+	p, _ := UnmarshallPerson(myJson)
+
+	log.Printf("%v", p)
+
+	result, _ := MarshallPerson(*p)
+	log.Printf("%v", string(result))
+}
+
+func MarshallPerson(p Person) (string, error) {
+	b, err := json.Marshal(p)
+	return string(b), err
+}
+
+func UnmarshallPerson(personJson string) (*Person, error) {
+	var unmarshalled Person
+	err := json.Unmarshal([]byte(personJson), &unmarshalled)
 	if err != nil {
 		log.Println("Error while unmarshalling", err)
-		return
+		return nil, err
 	}
-
-	log.Printf("%v", unmarshelled)
-
-	result, _ := json.Marshal(unmarshelled)
-	log.Printf("%v", string(result))
+	return &unmarshalled, nil
 }
