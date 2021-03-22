@@ -1,3 +1,3 @@
-module github.com/niuniuanran/LearnGo/Day15
+module github/niuniuanran/Day15
 
 go 1.15

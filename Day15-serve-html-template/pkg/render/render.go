@@ -1,4 +1,4 @@
-package main
+package render
 
 import (
 	"fmt"
@@ -6,7 +6,8 @@ import (
 	"net/http"
 )
 
-func renderTemplate(w http.ResponseWriter, tmplPath string) {
+// RenderTemplate renders template
+func RenderTemplate(w http.ResponseWriter, tmplPath string) {
 	parsedTemplate, err := template.ParseFiles("./templates/" + tmplPath + ".page.tmpl")
 	if err != nil {
 		fmt.Println("Error parsing template", tmplPath)
@@ -17,4 +18,3 @@ func renderTemplate(w http.ResponseWriter, tmplPath string) {
 		fmt.Println("Error executing template", tmplPath)
 	}
 }
-
