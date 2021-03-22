@@ -3,34 +3,21 @@ package render
 import (
 	"bytes"
 	"fmt"
+	"github/niuniuanran/Day15/pkg/config"
 	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
 )
 
-// RenderTemplate renders template
-func RenderTemplate(w http.ResponseWriter, pageName string) {
-	templatePath := pageName + ".page.gohtml"
-	templateCache, err := CreateTemplateCache()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	t, ok := templateCache[templatePath]
-	if !ok {
-		log.Fatal("No template found for ", pageName)
-	}
-
-	buf := new(bytes.Buffer)
-	_ = t.Execute(buf, nil)
-	_, err = buf.WriteTo(w)
-	if err != nil {
-		fmt.Println("Error writing template to browser", err)
-	}
+var functions = template.FuncMap{
 }
 
-var functions = template.FuncMap{
+var app *config.AppConfig
+
+// NewTemplates sets the config for
+func NewTemplates(a *config.AppConfig){
+	app = a
 }
 
 // CreateTemplateCache creates a template cache as a map
@@ -58,8 +45,26 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 				return nil, err
 			}
 		}
-		fmt.Println(name)
+
 		templatesCache[name] = templateSet
 	}
 	return templatesCache, nil
+}
+
+
+// RenderTemplate renders template
+func RenderTemplate(w http.ResponseWriter, pageName string) {
+	templatePath := pageName + ".page.gohtml"
+	tc := app.TemplateCache
+	t, ok := tc[templatePath]
+	if !ok {
+		log.Fatal("No template found for ", pageName)
+	}
+
+	buf := new(bytes.Buffer)
+	_ = t.Execute(buf, nil)
+	_, err := buf.WriteTo(w)
+	if err != nil {
+		fmt.Println("Error writing template to browser", err)
+	}
 }
