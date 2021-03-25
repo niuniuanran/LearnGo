@@ -13,13 +13,19 @@ func WriteToConsole(next http.Handler) http.Handler {
 	})
 }
 
+// NoSurf adds CSRF protection to non-HEAD/OPTIONS/GET requests
 func NoSurf(next http.Handler) http.Handler {
 	csfHandler := nosurf.New(next)
 	csfHandler.SetBaseCookie(http.Cookie{
 		HttpOnly: true,
 		Path: "/",
-		Secure: false,
+		Secure: app.InProduction,
 		SameSite: http.SameSiteLaxMode,
 	})
 	return csfHandler
+}
+
+// SessionLoad loads and saves the session on every request
+func SessionLoad(next http.Handler) http.Handler{
+	return session.LoadAndSave(next)
 }
