@@ -14,6 +14,10 @@ var functions = template.FuncMap{}
 
 var app *config.AppConfig
 
+func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+	return td
+}
+
 // RenderTemplate renders template
 func RenderTemplate(w http.ResponseWriter, pageName string, td *models.TemplateData) {
 	templatePath := pageName + ".page.gohtml"
@@ -28,6 +32,8 @@ func RenderTemplate(w http.ResponseWriter, pageName string, td *models.TemplateD
 	if !ok {
 		log.Fatal("No template found for ", pageName)
 	}
+
+	td = AddDefaultData(td)
 
 	// err := t.ExecuteTemplate(w, templatePath,nil)
 	err := t.Execute(w, td)
