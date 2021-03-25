@@ -1,12 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"github/niuniuanran/Day17/pkg/config"
 	"github/niuniuanran/Day17/pkg/handlers"
 	"github/niuniuanran/Day17/pkg/render"
 	"log"
 	"net/http"
 )
+
+const addr = ":8080"
 
 func main() {
 	var app config.AppConfig
@@ -19,7 +22,10 @@ func main() {
 	app.TemplateCache = tc
 	app.UseCache = false
 	render.SetAppConfig(&app)
-	http.HandleFunc("/", handlers.Repo.ServeHome)
-	http.HandleFunc("/about", handlers.Repo.ServeAbout)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	srv := &http.Server{
+		Addr: addr,
+		Handler: routes(&app),
+	}
+	fmt.Printf("Starting application on port %s\n", addr)
+	log.Fatal(srv.ListenAndServe())
 }
