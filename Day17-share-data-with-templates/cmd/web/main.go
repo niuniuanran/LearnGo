@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github/niuniuanran/Day15/pkg/config"
-	"github/niuniuanran/Day15/pkg/handlers"
-	"github/niuniuanran/Day15/pkg/render"
+	"github/niuniuanran/Day17/pkg/config"
+	"github/niuniuanran/Day17/pkg/handlers"
+	"github/niuniuanran/Day17/pkg/render"
 	"log"
 	"net/http"
 )

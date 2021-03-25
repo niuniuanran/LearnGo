@@ -1,17 +1,24 @@
 package handlers
 
 import (
-	"github/niuniuanran/Day15/pkg/config"
-	"github/niuniuanran/Day15/pkg/render"
+	"github/niuniuanran/Day17/pkg/config"
+	"github/niuniuanran/Day17/pkg/render"
 	"net/http"
 )
+
+type TemplateData struct {
+	StringMap map[string]string
+	IntMap    map[string]int
+	FloatMap  map[string]float32
+	Data      map[string]interface{}
+}
+
+var Repo *Repository
 
 // Repository pattern
 type Repository struct {
 	App *config.AppConfig
 }
-
-var Repo *Repository
 
 // NewRepo creates a new repository
 func NewRepo(a *config.AppConfig) *Repository {
