@@ -14,9 +14,12 @@ func main() {
 	if err != nil {
 		log.Fatal("Cannot create template cache")
 	}
+	repo := handlers.NewRepo(&app)
+	handlers.NewHandlers(repo)
 	app.TemplateCache = tc
-	render.NewTemplates(&app)
-	http.HandleFunc("/", handlers.ServeHome)
-	http.HandleFunc("/about", handlers.ServeAbout)
+	app.UseCache = false
+	render.SetAppConfig(&app)
+	http.HandleFunc("/", handlers.Repo.ServeHome)
+	http.HandleFunc("/about", handlers.Repo.ServeAbout)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
