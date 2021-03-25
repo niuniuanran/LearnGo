@@ -3,6 +3,7 @@ package render
 import (
 	"fmt"
 	"github/niuniuanran/Day17/pkg/config"
+	"github/niuniuanran/Day17/pkg/models"
 	"html/template"
 	"log"
 	"net/http"
@@ -14,7 +15,7 @@ var functions = template.FuncMap{}
 var app *config.AppConfig
 
 // RenderTemplate renders template
-func RenderTemplate(w http.ResponseWriter, pageName string) {
+func RenderTemplate(w http.ResponseWriter, pageName string, td *models.TemplateData) {
 	templatePath := pageName + ".page.gohtml"
 	var tc map[string]*template.Template
 	if app.UseCache {
@@ -29,7 +30,7 @@ func RenderTemplate(w http.ResponseWriter, pageName string) {
 	}
 
 	// err := t.ExecuteTemplate(w, templatePath,nil)
-	err := t.Execute(w, nil)
+	err := t.Execute(w, td)
 	if err != nil {
 		fmt.Println("Error writing template to browser", err)
 	}
