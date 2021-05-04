@@ -28,6 +28,9 @@ func NewHandlers(r *Repository) {
 
 // ServeHome serves home page
 func (m *Repository) ServeHome(w http.ResponseWriter, r *http.Request) {
+	remoteIP := r.RemoteAddr
+	// every time someone hits the homepage, store the ip address into their session
+	m.App.Session.Put(r.Context(), "remote_ip", remoteIP)
 	render.RenderTemplate(w, "home", &models.TemplateData{})
 }
 
@@ -35,5 +38,9 @@ func (m *Repository) ServeHome(w http.ResponseWriter, r *http.Request) {
 func (m *Repository) ServeAbout(w http.ResponseWriter, r *http.Request) {
 	stringMap := make(map[string]string)
 	stringMap["test"] = "Hello, world"
+
+	remoteIP := m.App.Session.GetString(r.Context(),"remote_ip")
+	stringMap["remote_ip"] = remoteIP
+
 	render.RenderTemplate(w, "about", &models.TemplateData{StringMap: stringMap})
 }
